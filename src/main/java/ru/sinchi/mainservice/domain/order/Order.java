@@ -36,7 +36,7 @@ public class Order {
     @Column(name = "created_at")
     ZonedDateTime createdAt;
 
-    @Column(name = "odred_status")
+    @Column(name = "order_status")
     @Enumerated(EnumType.STRING)
     OrderStatus orderStatus;
 
