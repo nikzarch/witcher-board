@@ -11,7 +11,7 @@ class MarketController(
     private val marketService: MarketService
 ) {
 
-    @PreAuthorize("hasAnyRole('GOD', 'WITCHER')")
+    @PreAuthorize("hasAnyRole('GOD', 'WITCHER') and @securityService.isOwner(#witcherId)")
     @PostMapping("/buy")
     fun buyItem(
         @RequestParam witcherId: Long,
@@ -21,7 +21,7 @@ class MarketController(
         return ResponseEntity.ok("Item purchased")
     }
 
-    @PreAuthorize("hasAnyRole('GOD', 'WITCHER')")
+    @PreAuthorize("hasAnyRole('GOD', 'WITCHER') and @securityService.isOwner(#witcherId)")
     @PostMapping("/sell")
     fun sellItem(
         @RequestParam witcherId: Long,

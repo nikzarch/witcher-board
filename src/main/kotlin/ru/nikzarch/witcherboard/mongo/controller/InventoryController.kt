@@ -13,13 +13,14 @@ class InventoryController(
     private val inventoryService: InventoryService
 ) {
 
-    @PreAuthorize("hasAnyRole('GOD', 'WITCHER')")
+    @PreAuthorize("hasAnyRole('GOD', 'WITCHER') and @securityService.isOwner(#witcherId)")
     @GetMapping("/{witcherId}")
     fun getInventory(
         @PathVariable witcherId: Long
     ): ResponseEntity<InventoryDocument> =
         ResponseEntity.ok(inventoryService.getByWitcherId(witcherId))
 
+    @PreAuthorize("hasAnyRole('GOD', 'MAGE') ")
     @PostMapping("/{witcherId}/items/{itemId}")
     fun addItem(
         @PathVariable witcherId: Long,
@@ -27,6 +28,7 @@ class InventoryController(
     ): ResponseEntity<InventoryDocument> =
         ResponseEntity.ok(inventoryService.addItem(witcherId, itemId))
 
+    @PreAuthorize("hasAnyRole('GOD', 'WITCHER') and @securityService.isOwner(#witcherId)")
     @DeleteMapping("/{witcherId}/items/{itemId}")
     fun removeItem(
         @PathVariable witcherId: Long,

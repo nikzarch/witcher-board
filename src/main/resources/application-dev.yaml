@@ -15,11 +15,7 @@ spring:
 
   data:
     mongodb:
-      host: localhost
-      port: 27017
-      database: witcherboard
-      username: mongo
-      password: 123
+      uri: mongodb://mongo:123@localhost:27017/witcherboard?authSource=admin
 
 jwt:
   secret: devdevdevdevdevdevdevdevdevdevdevdevdevdevdevdevdevdevdevdevdevdevdevdevdevdevdevdevdevdev

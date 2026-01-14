@@ -1,5 +1,6 @@
 package ru.nikzarch.witcherboard.mongo.service.impl
 
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
 import ru.nikzarch.witcherboard.mongo.document.ItemDocument
 import ru.nikzarch.witcherboard.mongo.dto.request.CreateItemRequest
@@ -8,14 +9,19 @@ import ru.nikzarch.witcherboard.mongo.dto.response.ItemResponse
 import ru.nikzarch.witcherboard.mongo.mapper.ItemMapper
 import ru.nikzarch.witcherboard.mongo.repository.ItemRepository
 import ru.nikzarch.witcherboard.mongo.service.ItemService
+import ru.nikzarch.witcherboard.service.UserService
 
 @Service
 class ItemServiceImpl(
     private val itemRepository: ItemRepository,
-    private val itemMapper: ItemMapper
+    private val itemMapper: ItemMapper,
+    private val userService: UserService
 ) : ItemService {
 
     override fun createItem(request: CreateItemRequest): ItemResponse {
+        userService.findUserById(request.mageId)?:{
+            throw UsernameNotFoundException("mage doesnt exist")
+        }
         val item = ItemDocument(
             name = request.name,
             description = request.description,
