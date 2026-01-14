@@ -24,8 +24,4 @@ public class Location {
     @Column
     private String description;
 
-
-
-
-
 }

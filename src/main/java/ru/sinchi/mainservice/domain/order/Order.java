@@ -3,6 +3,7 @@ package ru.sinchi.mainservice.domain.order;
 import jakarta.persistence.*;
 import lombok.Data;
 import ru.sinchi.mainservice.domain.coordinates.Location;
+import ru.sinchi.monsterservice.domain.Monster;
 
 import java.time.ZonedDateTime;
 
@@ -18,9 +19,9 @@ public class Order {
     @Column
     String name;
 
-    // Пока что нет самой таблицы
-    @Column
-    Long monsterId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "monster_id")
+    Monster monsterId;
 
     @Column
     String description;

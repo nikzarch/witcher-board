@@ -2,6 +2,7 @@ package ru.sinchi.mainservice.domain.battles;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import ru.sinchi.monsterservice.domain.Monster;
 
 @Entity
 @Table(name = "battles")
@@ -15,9 +16,9 @@ public class Battles {
     @Column(nullable = false)
     Long WitcherId;
 
-    // Пока что нет таблицы
-    @Column(name = "monster_id", nullable = false)
-    Long monsterId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "monster_id", nullable = false)
+    Monster monsterId;
 
     @Column(name = "battle_success", nullable = false)
     Boolean battleSuccess;
