@@ -13,5 +13,13 @@ spring:
       ddl-auto: validate
     show-sql: true
 
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: witcherboard
+      username: mongo
+      password: 123
+
 jwt:
-  secret: devdevdevdevdevdevdevdevdevdevdevdevdevdevdev
+  secret: devdevdevdevdevdevdevdevdevdevdevdevdevdevdevdevdevdevdevdevdevdevdevdevdevdevdevdevdevdev

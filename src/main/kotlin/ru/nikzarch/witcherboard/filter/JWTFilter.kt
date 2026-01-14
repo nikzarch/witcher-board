@@ -5,15 +5,18 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.userdetails.UserDetails
-import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
+
+import mu.KotlinLogging
+import ru.nikzarch.witcherboard.service.impl.UserServiceImpl
+
+private val ktLogger = KotlinLogging.logger {}
 
 @Component
 class JWTFilter(
     private val jwtProvider: JWTProvider,
-    private val userDetailsService: UserDetailsService
+    private val userDetailsService: UserServiceImpl
 ) : OncePerRequestFilter() {
 
     override fun doFilterInternal(
@@ -22,22 +25,18 @@ class JWTFilter(
         filterChain: FilterChain
     ) {
         try {
-            val authHeader = request.getHeader("Authorization")
-            if (!authHeader.isNullOrBlank() && authHeader.startsWith("Bearer ")) {
+            request.getHeader("Authorization")?.takeIf { it.startsWith("Bearer ") }?.let { authHeader ->
                 val token = authHeader.removePrefix("Bearer ").trim()
                 if (jwtProvider.isTokenValid(token)) {
                     val username = jwtProvider.extractUsername(token)
-                    val userDetails: UserDetails = userDetailsService.loadUserByUsername(username)
-                    val auth = UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.authorities
-                    )
-                    SecurityContextHolder.getContext().authentication = auth
+                    val userDetails = userDetailsService.loadUserByUsername(username)
+                    SecurityContextHolder.getContext().authentication =
+                        UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
                 }
             }
+
         } catch (ex: Exception) {
-            logger.error("Cant set user authentication", ex)
+            ktLogger.error("Cant set user authentication", ex)
         }
 
         filterChain.doFilter(request, response)

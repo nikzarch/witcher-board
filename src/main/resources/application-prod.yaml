@@ -13,5 +13,13 @@ spring:
       ddl-auto: validate
     show-sql: false
 
+  data:
+    mongodb:
+      host: ${MONGO_HOST}
+      port: ${MONGO_PORT}
+      database: ${MONGO_DB}
+      username: ${MONGO_USER}
+      password: ${MONGO_PASS}
+
 jwt:
   secret: ${JWT_SECRET_KEY}
