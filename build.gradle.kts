@@ -69,7 +69,7 @@ tasks.register("newMigration"){
 	description = "создаёт новую миграцию"
 
 	val migrationsDir = file("$rootDir/src/main/resources/db/liquibase/changelog")
-	val masterFile = migrationsDir.resolve("../changelog-master.yml")
+	val masterFile = migrationsDir.resolve("../changelog-master.yaml")
 
 	doLast {
 		val migrationName = project.findProperty("migrationName")?.toString()

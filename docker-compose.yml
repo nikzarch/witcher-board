@@ -4,13 +4,14 @@ services:
     container_name: Witcher
     ports:
       - "5433:5432"
+    env_file:
+      - .env
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: WitcherSchema
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASS}
+      POSTGRES_DB: witcherboard
     volumes:
       - postgres_data:/var/lib/postgresql
-      - ./db/liquibase/changelog:/docker-entrypoint-initdb.d
 
 volumes:
   postgres_data:
