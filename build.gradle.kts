@@ -101,12 +101,12 @@ tasks.register("newMigration"){
 			"unknown"
 		}
 		file.writeText(
-			"""
-            -- migration: $fileName
-            -- created by: $user
-            -- timestamp: $timestamp
-            """.trimIndent()
-		)
+				"""
+		--changeset $user:$newId-$migrationName
+		--comment: $migrationName
+		--created: $timestamp
+		""".trimIndent()
+			)
 		println("Миграция создана: $fileName в $migrationsDir")
 
 		val includeEntry = """
