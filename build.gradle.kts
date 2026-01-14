@@ -68,7 +68,7 @@ tasks.register("newMigration"){
 	group = "liquibase"
 	description = "создаёт новую миграцию"
 
-	val migrationsDir = file("$rootDir/db/liquibase/changelog")
+	val migrationsDir = file("$rootDir/src/main/resources/db/liquibase/changelog")
 	val masterFile = migrationsDir.resolve("../changelog-master.yml")
 
 	doLast {

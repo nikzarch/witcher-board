@@ -1,4 +1,0 @@
-databaseChangeLog:
-  - include:
-      file: changelog/001-arbuzik-migrate.sql
-      relativeToChangelogFile: true
