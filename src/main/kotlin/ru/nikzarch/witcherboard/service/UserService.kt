@@ -7,8 +7,9 @@ import ru.nikzarch.witcherboard.dto.auth.RegisterUserRequest
 
 
 interface UserService {
-    fun findUserByName(name: String) : User?
-    fun findUserById(id: Long) : User?
-    fun registerUser(request: RegisterUserRequest) : AuthResponse
-    fun loginUser(request: LoginUserRequest) : AuthResponse
+    fun findUserByName(name: String): User?
+    fun findUserById(id: Long): User?
+    fun registerUser(request: RegisterUserRequest): AuthResponse
+    fun loginUser(request: LoginUserRequest): AuthResponse
+    fun changeBalance(userId: Long, delta: Long)
 }

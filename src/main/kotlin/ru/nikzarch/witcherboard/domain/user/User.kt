@@ -24,6 +24,9 @@ class User(
     var salt: String,
 
     @Column(nullable = false)
+    var balance: Long = 0,
+
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     var role: UserRole = UserRole.PEASANT,
 

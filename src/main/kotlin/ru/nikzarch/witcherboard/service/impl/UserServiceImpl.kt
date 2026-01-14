@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import ru.nikzarch.witcherboard.domain.user.User
 import ru.nikzarch.witcherboard.domain.user.UserRole
 import ru.nikzarch.witcherboard.dto.auth.AuthResponse
@@ -13,9 +14,8 @@ import ru.nikzarch.witcherboard.dto.auth.LoginUserRequest
 import ru.nikzarch.witcherboard.dto.auth.RegisterUserRequest
 import ru.nikzarch.witcherboard.exception.InvalidCredentialsException
 import ru.nikzarch.witcherboard.filter.JWTProvider
-import ru.nikzarch.witcherboard.repository.jpa.UserRepository
+import ru.nikzarch.witcherboard.repository.UserRepository
 import ru.nikzarch.witcherboard.service.UserService
-import ru.nikzarch.witcherboard.util.HashResult
 import ru.nikzarch.witcherboard.util.HashUtils
 import java.util.*
 
@@ -81,7 +81,17 @@ class UserServiceImpl(
             throw InvalidCredentialsException("Invalid username or password")
         }
 
-        val token = jwtProvider.generateToken(user.username,user.role)
+        val token = jwtProvider.generateToken(user.username, user.role)
         return AuthResponse(token)
+    }
+
+    @Transactional
+    override fun changeBalance(userId: Long, delta: Long) {
+        val user = userRepository.findById(userId).orElseThrow { throw UsernameNotFoundException("user not found") }
+        val newBalance = user.balance + delta
+        if (newBalance < 0) {
+            throw IllegalStateException("balance cant be less than zero")
+        }
+        userRepository.save(user)
     }
 }
