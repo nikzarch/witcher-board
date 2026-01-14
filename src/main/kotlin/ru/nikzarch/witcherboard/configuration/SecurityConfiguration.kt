@@ -16,7 +16,7 @@ import ru.nikzarch.witcherboard.filter.JWTFilter
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
-class SecurityConfig(
+class SecurityConfiguration(
     private val jwtFilter: JWTFilter
 ) {
 
@@ -42,7 +42,6 @@ class SecurityConfig(
             allowedOrigins = listOf("*") // temp
             allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
             allowedHeaders = listOf("*")
-            allowCredentials = true
         }
         return UrlBasedCorsConfigurationSource().apply {
             registerCorsConfiguration("/**", configuration)

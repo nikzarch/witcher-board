@@ -21,6 +21,9 @@ class User(
     var password: String,
 
     @Column(nullable = false)
+    var salt: String,
+
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     var role: UserRole = UserRole.PEASANT,
 
