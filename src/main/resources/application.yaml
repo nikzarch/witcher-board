@@ -1,6 +1,8 @@
 spring:
   application:
     name: witcherboard
+  profiles:
+    active: dev
 
   liquibase:
     enabled: true
