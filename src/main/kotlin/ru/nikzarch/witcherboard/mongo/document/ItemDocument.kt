@@ -21,7 +21,7 @@ class ItemDocument(
     /**
      * featureId -> bonus percent to win
      */
-    var monsterBonuses: Map<Int, Int> = emptyMap(),
+    var monsterBonuses: Map<String, Int> = emptyMap(),
 
     var available: Boolean = true
 )

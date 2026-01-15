@@ -31,7 +31,8 @@ public class MonsterServiceImpl implements MonsterService {
 
     @Override
     public Monster getById(Long id) {
-        return monsterRepository.findById(id.intValue())
+        if (id == null) throw new IllegalArgumentException("Monster id is null");
+        return monsterRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Monster not found"));
     }
 

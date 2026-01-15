@@ -1,7 +1,10 @@
 package ru.nikzarch.monsterservice.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.nikzarch.mainservice.domain.coordinates.Location;
 
 import java.util.Set;
@@ -9,6 +12,9 @@ import java.util.Set;
 @Entity
 @Table(name = "monster")
 @Data
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@AllArgsConstructor
+@NoArgsConstructor
 public class Monster {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

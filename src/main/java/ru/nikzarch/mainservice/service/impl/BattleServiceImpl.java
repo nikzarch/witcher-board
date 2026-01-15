@@ -22,14 +22,14 @@ public class BattleServiceImpl implements BattleService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found"));
 
-        int monsterPower = order.getMonsterId().getDangerLevel();
+        int monsterPower = order.getMonster().getDangerLevel();
         int witcherPower = new Random().nextInt(10) + 5;
 
         boolean win = witcherPower >= monsterPower;
 
         Battles battle = new Battles();
         battle.setWitcherId(witcherId);
-        battle.setMonsterId(order.getMonsterId());
+        battle.setMonsterId(order.getMonster());
         battle.setBattleSuccess(win);
 
         battlesRepository.save(battle);

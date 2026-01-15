@@ -1,15 +1,20 @@
 package ru.nikzarch.mainservice.domain.order;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import ru.nikzarch.mainservice.domain.coordinates.Location;
 import ru.nikzarch.monsterservice.domain.Monster;
 
 import java.time.ZonedDateTime;
 
 @Entity
-@Table(name = "order")
+@Table(name = "orders")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Order {
 
     @Id
@@ -19,16 +24,16 @@ public class Order {
     @Column
     String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "monster_id")
-    Monster monsterId;
+    Monster monster;
 
     @Column
     String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "location_id", nullable = false)
-    Location locationId;
+    Location location;
 
     @Column
     Integer reward;
@@ -41,6 +46,6 @@ public class Order {
     OrderStatus orderStatus;
 
     @Column(name = "user_id")
-    Long UserId;
+    Long userId;
 
 }

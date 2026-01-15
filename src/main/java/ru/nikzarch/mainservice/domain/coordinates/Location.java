@@ -1,11 +1,15 @@
 package ru.nikzarch.mainservice.domain.coordinates;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "location")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Location {
 
     @Id

@@ -1,20 +1,24 @@
 package ru.nikzarch.mainservice.domain.witcheroffer;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.nikzarch.witcherboard.domain.user.User;
 import ru.nikzarch.mainservice.domain.order.Order;
 
 @Entity
 @Table(name = "witcher_offer")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class WitcherOffer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "order_id")
     Order order;
 

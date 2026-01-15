@@ -8,4 +8,9 @@ databaseChangeLog:
   - include:
       file: changelog/003-main-service.sql
       relativeToChangelogFile: true
-
+  - include:
+      file: changelog/004-add-monsters-locations.sql
+      relativeToChangelogFile: true
+  - include:
+      file: changelog/005-rename-order-to-orders.sql
+      relativeToChangelogFile: true

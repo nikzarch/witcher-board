@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import ru.nikzarch.monsterservice.domain.Monster;
 
 @Repository
-public interface MonsterRepository extends JpaRepository<Monster, Integer> {
+public interface MonsterRepository extends JpaRepository<Monster, Long> {
 }

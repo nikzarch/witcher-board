@@ -12,5 +12,5 @@ public class MonsterFeature {
     private Long id;
 
     @Column
-    private String name;
+    public String name;
 }

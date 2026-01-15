@@ -5,9 +5,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.nikzarch.mainservice.domain.order.Order;
 import ru.nikzarch.mainservice.domain.order.OrderStatus;
+import ru.nikzarch.mainservice.domain.order.dto.OrderDTO;
+import ru.nikzarch.mainservice.repository.LocationRepository;
 import ru.nikzarch.mainservice.repository.OrderRepository;
 import ru.nikzarch.mainservice.service.NotificationService;
 import ru.nikzarch.mainservice.service.OrderService;
+import ru.nikzarch.monsterservice.service.impl.MonsterServiceImpl;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -19,17 +22,23 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final NotificationService notificationService;
+    private final MonsterServiceImpl monsterService;
+    private final LocationRepository locationRepository;
 
     @Override
-    public Order createOrder(Order order) {
-        if (order.getDescription() == null || order.getLocationId() == null) {
-            throw new IllegalArgumentException("Required fields are empty");
-        }
-
-        order.setOrderStatus(OrderStatus.PENDING);
-        order.setCreatedAt(ZonedDateTime.now());
-
-        return orderRepository.save(order);
+    @Transactional
+    public Order createOrder(OrderDTO order) {
+        return orderRepository.save(Order.builder()
+                .name(order.name())
+                .monster(monsterService.getById(order.monsterId()))
+                .description(order.description())
+                .location(locationRepository.getReferenceById(order.locationId()))
+                .reward(order.reward())
+                .createdAt(ZonedDateTime.now())
+                .orderStatus(order.orderStatus())
+                .userId(order.userId())
+                .build()
+        );
     }
 
     @Override
