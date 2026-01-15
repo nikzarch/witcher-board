@@ -9,6 +9,6 @@ data class ItemResponse(
     val price: Int,
     val type: ItemType,
     val mageId: Long,
-    val monsterBonuses: Map<String, Int> = emptyMap(),
+    val monsterBonuses: Map<String, Int> = emptyMap(), // name to chance
     val available: Boolean = true
 )

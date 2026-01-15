@@ -3,9 +3,13 @@ package ru.nikzarch.witcherboard.mongo.mapper
 import org.springframework.stereotype.Component
 import ru.nikzarch.witcherboard.mongo.document.ItemDocument
 import ru.nikzarch.witcherboard.mongo.dto.response.ItemResponse
+import ru.sinchi.monsterservice.service.MonsterFeatureService
+import ru.sinchi.monsterservice.service.MonsterService
 
 @Component
-class ItemMapper {
+class ItemMapper(
+    private val monsterFeatureService: MonsterFeatureService
+) {
     fun toDto(itemDocument: ItemDocument): ItemResponse = ItemResponse(
         id = itemDocument.id ?: "null",
         name = itemDocument.name,
@@ -13,7 +17,9 @@ class ItemMapper {
         price = itemDocument.price,
         type = itemDocument.type,
         mageId = itemDocument.mageId,
-        monsterBonuses = itemDocument.monsterBonuses,
+        monsterBonuses = itemDocument.monsterBonuses.mapKeys { (k,v) ->
+            monsterFeatureService.getMonsterFeatureById(k).name
+        },
         available = itemDocument.available
     )
 }
