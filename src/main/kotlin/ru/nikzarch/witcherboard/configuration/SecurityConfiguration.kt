@@ -25,9 +25,19 @@ class SecurityConfiguration(
         http
             .cors { it.configurationSource(corsConfigurationSource()) }
             .csrf { it.disable() }
+            .headers{headers -> headers.frameOptions{frame -> frame.sameOrigin()}}
             .authorizeHttpRequests { auth ->
                 auth
                     .requestMatchers("/api/v1/auth/register", "/api/v1/auth/login", "/error").permitAll()
+                    .requestMatchers(
+                        "/v3/api-docs/**",
+                        "/swagger-ui/**",
+                        "/swagger-ui.html",
+                        "/swagger-resources/**",
+                        "/swagger-resources",
+                        "/webjars/**",
+                        "/docs/**"
+                    ).permitAll()
                     .anyRequest().authenticated()
             }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
