@@ -19,7 +19,7 @@ class ItemDocument(
     var mageId: Long,
 
     /**
-     * monsterId -> bonus percent to win
+     * featureId -> bonus percent to win
      */
     var monsterBonuses: Map<String, Int> = emptyMap(),
 
