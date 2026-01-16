@@ -14,25 +14,21 @@ public class MonsterController {
 
     private final MonsterService monsterService;
 
-    /** Просмотр бестиария */
     @GetMapping
     public List<Monster> getAll() {
         return monsterService.getAll();
     }
 
-    /** Получить конкретного монстра */
     @GetMapping("/{id}")
     public Monster getById(@PathVariable Long id) {
         return monsterService.getById(id);
     }
 
-    /** Добавление монстра (ведьмак) */
     @PostMapping
     public Monster create(@RequestBody Monster monster) {
         return monsterService.createMonster(monster);
     }
 
-    /** Редактирование монстра (ведьмак) */
     @PutMapping("/{id}")
     public Monster update(
             @PathVariable Long id,
@@ -41,7 +37,6 @@ public class MonsterController {
         return monsterService.updateMonster(id, monster);
     }
 
-    /** Автоматический расчёт награды */
     @GetMapping("/{id}/recommended-reward")
     public int getRecommendedReward(@PathVariable Long id) {
         Monster monster = monsterService.getById(id);

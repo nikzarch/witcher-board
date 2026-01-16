@@ -41,18 +41,13 @@ public class MonsterServiceImpl implements MonsterService {
         return monsterRepository.findAll();
     }
 
-    /**
-     * Автоматический расчёт награды
-     * Формула:
-     * base = dangerLevel * 100
-     * + 50 за каждую слабость
-     */
+
     @Override
     public int calculateRecommendedReward(Monster monster) {
         int base = monster.getDangerLevel() * 100;
         int featuresBonus = monster.getMonsterFeature() != null
-                ? monster.getMonsterFeature().size() * 50
+                ? monster.getMonsterFeature().size() * 10
                 : 0;
-        return base + featuresBonus;
+        return base - featuresBonus;
     }
 }

@@ -9,7 +9,6 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void notifyWitcherNewOrder(Order order) {
-        // TODO: websocket / email / push
         System.out.println("New order in your region: " + order.getId());
     }
 

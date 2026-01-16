@@ -34,7 +34,7 @@ public class BattleController {
 
 
         /*
-         * Пока что так, потом сделаем шансы на выживание и тд, если сделаем хах
+         * Пока что так, потом сделаем шансы на выживание и тд,
          */
         if (win) {
             orderService.completeOrder(orderId);
