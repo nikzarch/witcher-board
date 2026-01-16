@@ -28,7 +28,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public Order createOrder(OrderDTO order) {
-        return orderRepository.save(Order.builder()
+
+        var newOrder = Order.builder()
                 .name(order.name())
                 .monster(monsterService.getById(order.monsterId()))
                 .description(order.description())
@@ -37,8 +38,9 @@ public class OrderServiceImpl implements OrderService {
                 .createdAt(ZonedDateTime.now())
                 .orderStatus(order.orderStatus())
                 .userId(order.userId())
-                .build()
-        );
+                .build();
+
+        return orderRepository.save(newOrder);
     }
 
     @Override
@@ -61,8 +63,6 @@ public class OrderServiceImpl implements OrderService {
 
         order.setOrderStatus(OrderStatus.ACTIVE);
         order.setUserId(witcherId);
-
-        notificationService.notifyPeasantOrderAccepted(order);
 
         return order;
     }

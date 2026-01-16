@@ -14,3 +14,6 @@ databaseChangeLog:
   - include:
       file: changelog/005-rename-order-to-orders.sql
       relativeToChangelogFile: true
+  - include:
+      file: changelog/006-notification.sql
+      relativeToChangelogFile: true

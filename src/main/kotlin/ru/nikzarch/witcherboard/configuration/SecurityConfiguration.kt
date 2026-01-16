@@ -28,7 +28,7 @@ class SecurityConfiguration(
             .headers{headers -> headers.frameOptions{frame -> frame.sameOrigin()}}
             .authorizeHttpRequests { auth ->
                 auth
-                    .requestMatchers("/api/v1/auth/register", "/api/v1/auth/login", "/error").permitAll()
+                    .requestMatchers("/api/v1/auth/register", "/api/v1/auth/login", "/error" ).permitAll()
                     .requestMatchers(
                         "/v3/api-docs/**",
                         "/swagger-ui/**",
