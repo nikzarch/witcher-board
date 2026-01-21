@@ -2,71 +2,120 @@ package ru.nikzarch.mainservice.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.nikzarch.mainservice.domain.battles.Battles;
+import ru.nikzarch.mainservice.domain.battles.BattleResult;
+import ru.nikzarch.mainservice.domain.battles.dto.BattleResultDTO;
 import ru.nikzarch.mainservice.domain.order.Order;
-import ru.nikzarch.mainservice.repository.BattlesRepository;
+import ru.nikzarch.mainservice.domain.order.OrderStatus;
+import ru.nikzarch.mainservice.mapper.BattleResultMapper;
+import ru.nikzarch.mainservice.repository.BattleResultRepository;
 import ru.nikzarch.mainservice.repository.OrderRepository;
 import ru.nikzarch.mainservice.service.BattleService;
-import ru.nikzarch.witcherboard.mongo.document.InventoryDocument;
+import ru.nikzarch.monsterservice.domain.MonsterFeature;
 import ru.nikzarch.witcherboard.mongo.document.ItemDocument;
-import ru.nikzarch.witcherboard.mongo.repository.InventoryRepository;
-import ru.nikzarch.witcherboard.mongo.repository.ItemRepository;
+import ru.nikzarch.witcherboard.mongo.service.ItemService;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Service
 @RequiredArgsConstructor
+@Service
 public class BattleServiceImpl implements BattleService {
 
     private final OrderRepository orderRepository;
-    private final BattlesRepository battlesRepository;
-    private final InventoryRepository inventoryRepository;
-    private final ItemRepository itemRepository;
+    private final BattleResultRepository battleResultRepository;
+    private final ItemService itemService;
+
+    private final BattleResultMapper battleResultMapper;
+
+    private final Random random = new Random();
 
     @Override
-    public boolean fight(Long orderId, Long witcherId) {
+    public BattleResultDTO fight(Long orderId, Long witcherId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found"));
 
-        var monster = order.getMonster();
+        if (order.getOrderStatus() != OrderStatus.ACTIVE) {
+            throw new IllegalStateException("Order is not active");
+        }
 
-        int chance = 50;
+        int monsterPower = order.getMonster().getDangerLevel();
 
-        Set<String> monsterFeatures = monster.getMonsterFeature()
-                .stream()
-                .map(f -> f.getId().toString())
+        // 1) базовый шанс
+        double baseChance = calculateBaseChance(monsterPower);
+
+        // 2) бонусы от предметов ведьмака
+        double bonus = calculateBonusFromItems(witcherId, order.getMonster().getMonsterFeature());
+
+        double chance = baseChance + bonus;
+        chance = Math.min(chance, 95.0); // ограничение сверху
+
+        boolean win = random.nextDouble() * 100 <= chance;
+
+        BattleResult entity = new BattleResult();
+        entity.setOrderId(orderId);
+        entity.setWitcherId(witcherId);
+        entity.setMonsterId(order.getMonster().getId());
+        entity.setSuccess(win);
+        entity.setChance(chance);
+        entity.setCreatedAt(LocalDateTime.now());
+
+        battleResultRepository.save(entity);
+
+        if (win) {
+            order.setOrderStatus(OrderStatus.COMPLETED);
+            orderRepository.save(order);
+        }
+
+        return new BattleResultDTO(
+                orderId,
+                witcherId,
+                order.getMonster().getId(),
+                win,
+                chance,
+                win ? "Победа! Монстр убит." : "Поражение. Вы ранены.",
+                entity.getCreatedAt()
+        );
+    }
+
+    @Override
+    public List<BattleResultDTO> getHistory(Long witcherId) {
+        return battleResultRepository.findByWitcherIdOrderByCreatedAtDesc(witcherId).stream().map(battleResultMapper::toDto).collect(Collectors.toList());
+    }
+
+    private double calculateBaseChance(int monsterPower) {
+        double base = 70;
+        double penalty = monsterPower * 2.5;
+        double chance = base - penalty;
+        if (chance < 5) chance = 5;
+        if (chance > 95) chance = 95;
+        return chance;
+    }
+
+    private double calculateBonusFromItems(Long witcherId, Set<MonsterFeature> monsterFeatures) {
+        List<ItemDocument> items = itemService.getItemsByWitcherId(witcherId);
+
+        Set<String> monsterFeatureIds = monsterFeatures.stream()
+                .map(f -> String.valueOf(f.getId()))
                 .collect(Collectors.toSet());
 
-        InventoryDocument inventory = inventoryRepository.findByWitcherId(witcherId);
+        int totalBonus = 0;
+        for (ItemDocument item : items) {
+            for (Map.Entry<String, Integer> bonusEntry : item.getMonsterBonuses().entrySet()) {
+                String featureId = bonusEntry.getKey();
+                Integer bonusValue = bonusEntry.getValue();
 
-        if (inventory != null) {
-            List<ItemDocument> items = itemRepository.findAllById(inventory.getItemIds());
-
-            for (ItemDocument item : items) {
-                for (String featureId : item.getMonsterBonuses().keySet()) {
-                    if (monsterFeatures.contains(featureId)) {
-                        chance += 5;
-                    }
+                if (monsterFeatureIds.contains(featureId)) {
+                    totalBonus += bonusValue;
                 }
             }
         }
 
-        chance = Math.min(chance, 95);
-        chance = Math.max(chance, 5);
+        if (totalBonus > 25) totalBonus = 25;
 
-        int roll = new Random().nextInt(100) + 1;
-        boolean win = roll <= chance;
-        
-        Battles battle = new Battles();
-        battle.setWitcherId(witcherId);
-        battle.setMonsterId(monster);
-        battle.setBattleSuccess(win);
-
-        battlesRepository.save(battle);
-
-        return win;
+        return totalBonus;
     }
 }

@@ -1,6 +1,9 @@
 package ru.nikzarch.mainservice.service;
 
-public interface BattleService {
+import ru.nikzarch.mainservice.domain.battles.dto.BattleResultDTO;
 
-    boolean fight(Long orderId, Long witcherId);
+public interface BattleService {
+    BattleResultDTO fight(Long orderId, Long witcherId);
+    java.util.List<BattleResultDTO> getHistory(Long witcherId);
 }
+

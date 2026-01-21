@@ -3,11 +3,10 @@ package ru.nikzarch.mainservice.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.nikzarch.mainservice.domain.order.Order;
-import ru.nikzarch.mainservice.domain.order.OrderStatus;
+import ru.nikzarch.mainservice.domain.battles.dto.BattleResultDTO;
 import ru.nikzarch.mainservice.service.BattleService;
-import ru.nikzarch.mainservice.service.OrderService;
-import ru.nikzarch.mainservice.repository.OrderRepository;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/battles")
@@ -15,38 +14,19 @@ import ru.nikzarch.mainservice.repository.OrderRepository;
 public class BattleController {
 
     private final BattleService battleService;
-    private final OrderService orderService;
-    private final OrderRepository orderRepository;
 
-    @PostMapping("/")
-    public ResponseEntity<BattleResult> fight(
+    @PostMapping
+    public ResponseEntity<BattleResultDTO> fight(
             @RequestParam Long orderId,
             @RequestParam Long witcherId
     ) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
-
-        if (order.getOrderStatus() != OrderStatus.ACTIVE) {
-            throw new IllegalStateException("Order is not active");
-        }
-
-        boolean win = battleService.fight(orderId, witcherId);
-
-
-        /*
-         * Пока что так, потом сделаем шансы на выживание и тд,
-         */
-        if (win) {
-            orderService.completeOrder(orderId);
-            return  ResponseEntity.ok(new BattleResult(true, "Победа! Монстр убит."));
-        } else {
-            return ResponseEntity.ok(new BattleResult(false, "Поражение. Вы ранены.")) ;
-        }
+        return ResponseEntity.ok(battleService.fight(orderId, witcherId));
     }
 
-
-    public record BattleResult(
-            boolean success,
-            String message
-    ) {}
+    @GetMapping("/history/{witcherId}")
+    public ResponseEntity<List<BattleResultDTO>> history(
+            @PathVariable Long witcherId
+    ) {
+        return ResponseEntity.ok(battleService.getHistory(witcherId));
+    }
 }

@@ -1,8 +1,11 @@
 package ru.nikzarch.monsterservice.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.nikzarch.monsterservice.domain.Monster;
+import ru.nikzarch.monsterservice.domain.MonsterFeature;
+import ru.nikzarch.monsterservice.service.MonsterFeatureService;
 import ru.nikzarch.monsterservice.service.MonsterService;
 
 import java.util.List;
@@ -13,6 +16,7 @@ import java.util.List;
 public class MonsterController {
 
     private final MonsterService monsterService;
+    private final MonsterFeatureService monsterFeatureService;
 
     @GetMapping
     public List<Monster> getAll() {
@@ -41,5 +45,10 @@ public class MonsterController {
     public int getRecommendedReward(@PathVariable Long id) {
         Monster monster = monsterService.getById(id);
         return monsterService.calculateRecommendedReward(monster);
+    }
+
+    @GetMapping("/features")
+    public ResponseEntity<List<MonsterFeature>> getAllMonsterFeatures(){
+            return ResponseEntity.ok(monsterFeatureService.getAll());
     }
 }

@@ -7,6 +7,8 @@ import ru.nikzarch.witcherboard.mongo.dto.response.ItemResponse
 
 interface ItemService {
 
+    fun getAll(): List<ItemResponse>
+
     fun createItem(request: CreateItemRequest): ItemResponse
     fun deleteItem(request: DeleteItemRequest)
     fun getItemById(itemId: String): ItemResponse
@@ -14,4 +16,8 @@ interface ItemService {
     fun getAvailableItemsByMage(mageId: Long): List<ItemDocument>
 
     fun setAvailability(itemId: String, available: Boolean)
+
+    fun getItemsByWitcherId(witcherId: Long): List<ItemDocument>
+
+
 }

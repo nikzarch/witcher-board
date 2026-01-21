@@ -61,12 +61,13 @@ class UserServiceImpl(
             username = request.username,
             password = hashResult.hashed,
             salt = hashResult.salt,
-            role = request.role
+            role = request.role,
+            balance = if (request.role.equals(UserRole.WITCHER)) 200 else 1000
         )
         userRepository.save(user)
 
         val token: String = jwtProvider.generateToken(user.username, user.role)
-        return AuthResponse(token)
+        return AuthResponse(token,user.role,user.id!! )
     }
 
     override fun loginUser(request: LoginUserRequest): AuthResponse {
@@ -82,7 +83,7 @@ class UserServiceImpl(
         }
 
         val token = jwtProvider.generateToken(user.username, user.role)
-        return AuthResponse(token)
+        return AuthResponse(token,user.role,user.id!!)
     }
 
     @Transactional

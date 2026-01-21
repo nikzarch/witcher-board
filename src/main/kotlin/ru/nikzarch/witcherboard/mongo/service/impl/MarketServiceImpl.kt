@@ -1,5 +1,6 @@
 package ru.nikzarch.witcherboard.mongo.service.impl
 
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.nikzarch.witcherboard.mongo.exception.ItemNotFoundException
@@ -36,6 +37,7 @@ class MarketServiceImpl(
         itemRepository.save(item)
     }
 
+    @Transactional
     override fun sellItem(witcherId: Long, itemId: String) {
         val item = itemRepository.findById(itemId).orElseThrow { ItemNotFoundException("item not found") }
 
@@ -46,6 +48,12 @@ class MarketServiceImpl(
 
         item.available = true
         itemRepository.save(item)
+    }
+
+    override fun getBalanceByUserId(userId: Long) : Long {
+        val user = userService.findUserById(userId)
+            ?: throw UsernameNotFoundException("user not found")
+        return user.balance
     }
 
 }

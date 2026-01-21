@@ -7,6 +7,7 @@ import ru.nikzarch.witcherboard.mongo.dto.request.CreateItemRequest
 import ru.nikzarch.witcherboard.mongo.dto.request.DeleteItemRequest
 import ru.nikzarch.witcherboard.mongo.dto.response.ItemResponse
 import ru.nikzarch.witcherboard.mongo.mapper.ItemMapper
+import ru.nikzarch.witcherboard.mongo.repository.InventoryRepository
 import ru.nikzarch.witcherboard.mongo.repository.ItemRepository
 import ru.nikzarch.witcherboard.mongo.service.ItemService
 import ru.nikzarch.witcherboard.service.UserService
@@ -15,8 +16,11 @@ import ru.nikzarch.witcherboard.service.UserService
 class ItemServiceImpl(
     private val itemRepository: ItemRepository,
     private val itemMapper: ItemMapper,
-    private val userService: UserService
+    private val userService: UserService,
+    private val inventoryRepository: InventoryRepository
 ) : ItemService {
+
+    override fun getAll(): List<ItemResponse> = itemRepository.findAll().map(itemMapper::toDto)
 
     override fun createItem(request: CreateItemRequest): ItemResponse {
         userService.findUserById(request.mageId)?:{
@@ -49,5 +53,13 @@ class ItemServiceImpl(
         val item = itemRepository.findById(itemId).orElseThrow { IllegalArgumentException("Item not found") }
         item.available = available
         itemRepository.save(item)
+    }
+    override fun getItemsByWitcherId(witcherId: Long): List<ItemDocument> {
+        val inventory = inventoryRepository
+            .findByWitcherId(witcherId)
+            ?: return emptyList()
+
+        return itemRepository
+            .findAllById(inventory.itemIds)
     }
 }

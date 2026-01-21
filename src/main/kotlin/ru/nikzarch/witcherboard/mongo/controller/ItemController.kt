@@ -27,6 +27,8 @@ class ItemController(
     ): ResponseEntity<ItemResponse> =
         ResponseEntity.ok(itemService.getItemById(id))
 
+    @GetMapping
+    fun getAllItems() : ResponseEntity<List<ItemResponse>> = ResponseEntity.ok(itemService.getAll())
 
     @ExceptionHandler(IllegalArgumentException::class)
     fun handleIllegalArgument(ex: IllegalArgumentException): ResponseEntity<String> =

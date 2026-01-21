@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.nikzarch.mainservice.domain.order.Order;
 import ru.nikzarch.mainservice.domain.order.dto.OrderDTO;
+import ru.nikzarch.mainservice.domain.order.dto.RewardDto;
 import ru.nikzarch.mainservice.service.OrderService;
 import ru.nikzarch.mainservice.service.impl.OrderServiceImpl;
 

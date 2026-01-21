@@ -4,11 +4,15 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import ru.nikzarch.witcherboard.mongo.service.MarketService
+import ru.nikzarch.witcherboard.service.SecurityService
+import ru.nikzarch.witcherboard.service.UserService
 
 @RestController
 @RequestMapping("/api/v1/market")
 class MarketController(
-    private val marketService: MarketService
+    private val marketService: MarketService,
+    private val securityService: SecurityService,
+    private val userService: UserService
 ) {
 
     @PreAuthorize("hasAnyRole('GOD', 'WITCHER') and @securityService.isOwner(#witcherId)")
@@ -30,6 +34,9 @@ class MarketController(
         marketService.sellItem(witcherId, itemId)
         return ResponseEntity.ok("Item sold")
     }
+
+    @GetMapping("/my-balance")
+    fun getMyBalance() : ResponseEntity<Long> = ResponseEntity.ok(marketService.getBalanceByUserId(userService.findUserByName(securityService.getAuthenticatedUser().username)?.id!!))
 
     @ExceptionHandler(IllegalStateException::class)
     fun handleIllegalState(ex: IllegalStateException): ResponseEntity<String> =

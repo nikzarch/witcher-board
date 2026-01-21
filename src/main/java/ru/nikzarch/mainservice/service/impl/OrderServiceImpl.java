@@ -10,6 +10,7 @@ import ru.nikzarch.mainservice.repository.LocationRepository;
 import ru.nikzarch.mainservice.repository.OrderRepository;
 import ru.nikzarch.mainservice.service.NotificationService;
 import ru.nikzarch.mainservice.service.OrderService;
+import ru.nikzarch.monsterservice.domain.Monster;
 import ru.nikzarch.monsterservice.service.impl.MonsterServiceImpl;
 
 import java.time.ZonedDateTime;
@@ -36,7 +37,7 @@ public class OrderServiceImpl implements OrderService {
                 .location(locationRepository.getReferenceById(order.locationId()))
                 .reward(order.reward())
                 .createdAt(ZonedDateTime.now())
-                .orderStatus(order.orderStatus())
+                .orderStatus(OrderStatus.ACTIVE)
                 .userId(order.userId())
                 .build();
 
@@ -47,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> getAvailableOrders() {
         return orderRepository.findAll()
                 .stream()
-                .filter(o -> o.getOrderStatus() == OrderStatus.PENDING)
+                .filter(o -> o.getOrderStatus() == OrderStatus.ACTIVE)
                 .collect(Collectors.toList());
     }
 

@@ -6,6 +6,8 @@ import ru.nikzarch.monsterservice.domain.MonsterFeature;
 import ru.nikzarch.monsterservice.repository.MonsterFeatureRepository;
 import ru.nikzarch.monsterservice.service.MonsterFeatureService;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class MonsterFeatureServiceImpl implements MonsterFeatureService {
@@ -14,5 +16,10 @@ public class MonsterFeatureServiceImpl implements MonsterFeatureService {
     @Override
     public MonsterFeature getMonsterFeatureById(Integer id) {
         return monsterFeatureRepository.findById(id).orElseThrow(()-> new RuntimeException("feature not found"));
+    }
+
+    @Override
+    public List<MonsterFeature> getAll() {
+        return monsterFeatureRepository.findAll();
     }
 }

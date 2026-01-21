@@ -6,11 +6,15 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import ru.nikzarch.witcherboard.mongo.document.InventoryDocument
 import ru.nikzarch.witcherboard.mongo.service.InventoryService
+import ru.nikzarch.witcherboard.service.SecurityService
+import ru.nikzarch.witcherboard.service.UserService
 
 @RestController
 @RequestMapping("/api/v1/inventories")
 class InventoryController(
-    private val inventoryService: InventoryService
+    private val inventoryService: InventoryService,
+    private val securityService: SecurityService,
+    private val userService: UserService
 ) {
 
     @PreAuthorize("hasAnyRole('GOD', 'WITCHER') and @securityService.isOwner(#witcherId)")
@@ -19,6 +23,11 @@ class InventoryController(
         @PathVariable witcherId: Long
     ): ResponseEntity<InventoryDocument> =
         ResponseEntity.ok(inventoryService.getByWitcherId(witcherId))
+
+    @PreAuthorize("hasAnyRole('GOD','WITCHER')")
+    @GetMapping("/my")
+    fun getMyInventory() : ResponseEntity<InventoryDocument> =
+        ResponseEntity.ok(inventoryService.getByWitcherId(userService.findUserByName(securityService.getAuthenticatedUser().username)?.id!!))
 
     @PreAuthorize("hasAnyRole('GOD', 'MAGE') ")
     @PostMapping("/{witcherId}/items/{itemId}")
