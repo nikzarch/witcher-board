@@ -13,6 +13,7 @@ import ru.nikzarch.mainservice.service.BattleService;
 import ru.nikzarch.monsterservice.domain.MonsterFeature;
 import ru.nikzarch.witcherboard.mongo.document.ItemDocument;
 import ru.nikzarch.witcherboard.mongo.service.ItemService;
+import ru.nikzarch.witcherboard.service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,6 +28,7 @@ public class BattleServiceImpl implements BattleService {
 
     private final OrderRepository orderRepository;
     private final BattleResultRepository battleResultRepository;
+    private final UserService userService;
     private final ItemService itemService;
 
     private final BattleResultMapper battleResultMapper;
@@ -68,6 +70,7 @@ public class BattleServiceImpl implements BattleService {
         if (win) {
             order.setOrderStatus(OrderStatus.COMPLETED);
             orderRepository.save(order);
+            userService.changeBalance(witcherId,order.getReward());
         }else {
             order.setOrderStatus(OrderStatus.ACTIVE);
             orderRepository.save(order);
