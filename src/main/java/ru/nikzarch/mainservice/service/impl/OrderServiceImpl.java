@@ -12,6 +12,7 @@ import ru.nikzarch.mainservice.service.NotificationService;
 import ru.nikzarch.mainservice.service.OrderService;
 import ru.nikzarch.monsterservice.domain.Monster;
 import ru.nikzarch.monsterservice.service.impl.MonsterServiceImpl;
+import ru.nikzarch.witcherboard.service.UserService;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -25,6 +26,7 @@ public class OrderServiceImpl implements OrderService {
     private final NotificationService notificationService;
     private final MonsterServiceImpl monsterService;
     private final LocationRepository locationRepository;
+    private final UserService userService;
 
     @Override
     @Transactional
@@ -73,6 +75,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found"));
         order.setOrderStatus(OrderStatus.COMPLETED);
+        userService.changeBalance(order.getUserId(),-order.getReward());
         return orderRepository.save(order);
     }
 
@@ -82,5 +85,13 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new IllegalArgumentException("Order not found"));
         order.setOrderStatus(OrderStatus.CLOSED);
         return orderRepository.save(order);
+    }
+
+    @Override
+    public List<Order> getPendingOrdersForWitcher(Long witcherId) {
+        return orderRepository.findAll()
+                .stream()
+                .filter(o -> o.getOrderStatus() == OrderStatus.PENDING && o.getUserId().equals(witcherId))
+                .collect(Collectors.toList());
     }
 }

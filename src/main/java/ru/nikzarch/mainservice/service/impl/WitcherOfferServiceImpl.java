@@ -8,6 +8,8 @@ import ru.nikzarch.mainservice.repository.OrderRepository;
 import ru.nikzarch.mainservice.repository.WitchOfferRepository;
 import ru.nikzarch.mainservice.service.WitcherOfferService;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class WitcherOfferServiceImpl implements WitcherOfferService {
@@ -32,8 +34,15 @@ public class WitcherOfferServiceImpl implements WitcherOfferService {
         if (offer.getOrderStatus() != WitcherOfferStatus.CREATED) {
             throw new IllegalStateException("Offer status already finalized");
         }
-
+        var order = offer.getOrder();
+        order.setReward(Math.toIntExact(offer.getSuggestedPrice()));
         offer.setOrderStatus(status);
+        orderRepository.save(order);
         return offerRepository.save(offer);
     }
+    @Override
+    public List<WitcherOffer> getOffersByOrder(Long orderId) {
+        return offerRepository.findByOrderId(orderId);
+    }
+
 }

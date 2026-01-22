@@ -8,6 +8,8 @@ import ru.nikzarch.mainservice.domain.order.dto.OrderDTO;
 import ru.nikzarch.mainservice.domain.order.dto.RewardDto;
 import ru.nikzarch.mainservice.service.OrderService;
 import ru.nikzarch.mainservice.service.impl.OrderServiceImpl;
+import ru.nikzarch.witcherboard.service.SecurityService;
+import ru.nikzarch.witcherboard.service.UserService;
 
 import java.util.List;
 
@@ -16,7 +18,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderController {
 
-    private final OrderServiceImpl orderService;
+    private final OrderService orderService;
+    private final SecurityService securityService;
+    private final UserService userService;
 
     @PostMapping
     public ResponseEntity<String> createOrder(@RequestBody OrderDTO order) {
@@ -27,6 +31,10 @@ public class OrderController {
     @GetMapping()
     public ResponseEntity<List<Order>> getAvailableOrders() {
         return ResponseEntity.ok(orderService.getAvailableOrders());
+    }
+    @GetMapping("/pending")
+    public ResponseEntity<List<Order>> getPending(){
+        return ResponseEntity.ok(orderService.getPendingOrdersForWitcher(userService.findUserByName(securityService.getAuthenticatedUser().getUsername()).getId()));
     }
 
 

@@ -38,8 +38,8 @@ public class BattleServiceImpl implements BattleService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found"));
 
-        if (order.getOrderStatus() != OrderStatus.ACTIVE) {
-            throw new IllegalStateException("Order is not active");
+        if (order.getOrderStatus() != OrderStatus.PENDING) {
+            throw new IllegalStateException("Order is not pending");
         }
 
         int monsterPower = order.getMonster().getDangerLevel();

@@ -43,8 +43,8 @@ class MarketServiceImpl(
 
         inventoryService.removeItem(witcherId, itemId)
 
-        userService.changeBalance(witcherId, -item.price.toLong())
-        userService.changeBalance(item.mageId, item.price.toLong())
+        userService.changeBalance(witcherId, item.price.toLong())
+        userService.changeBalance(item.mageId, -item.price.toLong())
 
         item.available = true
         itemRepository.save(item)

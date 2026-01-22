@@ -8,6 +8,8 @@ import ru.nikzarch.mainservice.domain.witcheroffer.WitcherOffer;
 import ru.nikzarch.mainservice.domain.witcheroffer.WitcherOfferStatus;
 import ru.nikzarch.mainservice.service.WitcherOfferService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/offers")
 @RequiredArgsConstructor
@@ -24,6 +26,11 @@ public class WitcherOfferController {
         return ResponseEntity.ok(
                 witcherOfferService.createOffer(orderId, suggestedPrice)
         );
+    }
+    @PreAuthorize("hasRole('PEASANT')")
+    @GetMapping("/by-order/{orderId}")
+    public ResponseEntity<List<WitcherOffer>> getOffersByOrder(@PathVariable Long orderId) {
+        return ResponseEntity.ok(witcherOfferService.getOffersByOrder(orderId));
     }
 
     @PreAuthorize("hasRole('PEASANT')")

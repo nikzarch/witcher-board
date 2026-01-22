@@ -16,4 +16,5 @@ public interface OrderService {
     Order completeOrder(Long orderId);
 
     Order markExpired(Long orderId);
+    List<Order> getPendingOrdersForWitcher(Long witcherId);
 }

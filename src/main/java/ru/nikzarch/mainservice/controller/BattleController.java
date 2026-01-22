@@ -29,4 +29,5 @@ public class BattleController {
     ) {
         return ResponseEntity.ok(battleService.getHistory(witcherId));
     }
+
 }
