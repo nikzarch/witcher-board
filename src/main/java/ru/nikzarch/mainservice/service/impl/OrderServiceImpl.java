@@ -65,6 +65,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         order.setOrderStatus(OrderStatus.PENDING);
+        userService.changeBalance(order.getUserId(), -order.getReward());
         order.setUserId(witcherId);
 
         return order;
