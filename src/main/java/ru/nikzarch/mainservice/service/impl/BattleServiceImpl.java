@@ -68,6 +68,9 @@ public class BattleServiceImpl implements BattleService {
         if (win) {
             order.setOrderStatus(OrderStatus.COMPLETED);
             orderRepository.save(order);
+        }else {
+            order.setOrderStatus(OrderStatus.ACTIVE);
+            orderRepository.save(order);
         }
 
         return new BattleResultDTO(
