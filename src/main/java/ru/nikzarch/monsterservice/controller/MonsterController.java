@@ -51,4 +51,8 @@ public class MonsterController {
     public ResponseEntity<List<MonsterFeature>> getAllMonsterFeatures(){
             return ResponseEntity.ok(monsterFeatureService.getAll());
     }
+    @GetMapping("/features/{id}")
+    public ResponseEntity<MonsterFeature> getMonsterFeatureById(@PathVariable Integer id){
+        return ResponseEntity.ok(monsterFeatureService.getMonsterFeatureById(id));
+    }
 }

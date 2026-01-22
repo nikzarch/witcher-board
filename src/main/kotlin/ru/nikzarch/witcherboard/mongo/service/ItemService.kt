@@ -10,7 +10,7 @@ interface ItemService {
     fun getAll(): List<ItemResponse>
 
     fun createItem(request: CreateItemRequest): ItemResponse
-    fun deleteItem(request: DeleteItemRequest)
+    fun deleteItem(itemId: String)
     fun getItemById(itemId: String): ItemResponse
 
     fun getAvailableItemsByMage(mageId: Long): List<ItemDocument>

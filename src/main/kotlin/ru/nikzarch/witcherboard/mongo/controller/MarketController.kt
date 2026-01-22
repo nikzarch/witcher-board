@@ -15,7 +15,7 @@ class MarketController(
     private val userService: UserService
 ) {
 
-    @PreAuthorize("hasAnyRole('GOD', 'WITCHER') and @securityService.isOwner(#witcherId)")
+    @PreAuthorize("hasAnyRole('GOD', 'WITCHER')")
     @PostMapping("/buy")
     fun buyItem(
         @RequestParam witcherId: Long,
@@ -25,7 +25,7 @@ class MarketController(
         return ResponseEntity.ok("Item purchased")
     }
 
-    @PreAuthorize("hasAnyRole('GOD', 'WITCHER') and @securityService.isOwner(#witcherId)")
+    @PreAuthorize("hasAnyRole('GOD', 'WITCHER')")
     @PostMapping("/sell")
     fun sellItem(
         @RequestParam witcherId: Long,
@@ -36,7 +36,7 @@ class MarketController(
     }
 
     @GetMapping("/my-balance")
-    fun getMyBalance() : ResponseEntity<Long> = ResponseEntity.ok(marketService.getBalanceByUserId(userService.findUserByName(securityService.getAuthenticatedUser().username)?.id!!))
+    fun getMyBalance() : ResponseEntity<Long> = ResponseEntity.ok(marketService.getBalanceByUsername(securityService.getAuthenticatedUser().username))
 
     @ExceptionHandler(IllegalStateException::class)
     fun handleIllegalState(ex: IllegalStateException): ResponseEntity<String> =

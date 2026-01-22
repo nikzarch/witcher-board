@@ -30,6 +30,7 @@ class InventoryServiceImpl(
     }
 
     override fun getByWitcherId(witcherId: Long): InventoryDocument {
+
         val inventory = inventoryRepository.findByWitcherId(witcherId)
             ?: inventoryRepository.save(
                 InventoryDocument(witcherId = witcherId)

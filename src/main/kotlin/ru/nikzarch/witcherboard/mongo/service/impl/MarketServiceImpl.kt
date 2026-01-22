@@ -43,8 +43,8 @@ class MarketServiceImpl(
 
         inventoryService.removeItem(witcherId, itemId)
 
-        userService.changeBalance(witcherId, item.price.toLong())
-        userService.changeBalance(item.mageId, -item.price.toLong())
+        userService.changeBalance(witcherId, -item.price.toLong())
+        userService.changeBalance(item.mageId, item.price.toLong())
 
         item.available = true
         itemRepository.save(item)
@@ -54,6 +54,12 @@ class MarketServiceImpl(
         val user = userService.findUserById(userId)
             ?: throw UsernameNotFoundException("user not found")
         return user.balance
+    }
+
+    override fun getBalanceByUsername(username: String): Long {
+        val user = userService.findUserByName(username)
+            ?: throw UsernameNotFoundException("user not found")
+        return user.balance;
     }
 
 }

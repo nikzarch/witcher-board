@@ -27,6 +27,10 @@ class ItemController(
     ): ResponseEntity<ItemResponse> =
         ResponseEntity.ok(itemService.getItemById(id))
 
+    @PreAuthorize("hasAnyRole('GOD','MAGE')")
+    @DeleteMapping("/{id}")
+    fun deleteItem(@PathVariable id: String) = ResponseEntity.ok(itemService.deleteItem(id))
+
     @GetMapping
     fun getAllItems() : ResponseEntity<List<ItemResponse>> = ResponseEntity.ok(itemService.getAll())
 

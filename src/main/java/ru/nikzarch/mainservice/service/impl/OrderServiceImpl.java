@@ -58,11 +58,11 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found"));
 
-        if (order.getOrderStatus() != OrderStatus.PENDING) {
+        if (order.getOrderStatus() != OrderStatus.ACTIVE) {
             throw new IllegalStateException("Order already accepted");
         }
 
-        order.setOrderStatus(OrderStatus.ACTIVE);
+        order.setOrderStatus(OrderStatus.PENDING);
         order.setUserId(witcherId);
 
         return order;

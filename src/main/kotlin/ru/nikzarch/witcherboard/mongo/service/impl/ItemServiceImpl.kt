@@ -2,6 +2,7 @@ package ru.nikzarch.witcherboard.mongo.service.impl
 
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import ru.nikzarch.witcherboard.mongo.document.ItemDocument
 import ru.nikzarch.witcherboard.mongo.dto.request.CreateItemRequest
 import ru.nikzarch.witcherboard.mongo.dto.request.DeleteItemRequest
@@ -39,8 +40,10 @@ class ItemServiceImpl(
         return itemMapper.toDto(itemRepository.save(item))
     }
 
-    override fun deleteItem(request: DeleteItemRequest) {
-        itemRepository.deleteById(request.id)
+    @Transactional
+    override fun deleteItem(itemId: String) {
+        inventoryRepository.findAll().map { it.itemIds.contains(itemId) }
+        itemRepository.deleteById(itemId)
     }
 
     override fun getItemById(itemId: String): ItemResponse =

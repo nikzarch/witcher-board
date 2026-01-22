@@ -6,4 +6,5 @@ interface MarketService {
 
     fun sellItem(witcherId: Long, itemId: String)
     fun getBalanceByUserId(userId: Long) : Long
+    fun getBalanceByUsername(username: String) : Long
 }

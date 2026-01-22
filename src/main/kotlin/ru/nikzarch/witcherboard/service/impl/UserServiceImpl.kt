@@ -90,9 +90,11 @@ class UserServiceImpl(
     override fun changeBalance(userId: Long, delta: Long) {
         val user = userRepository.findById(userId).orElseThrow { throw UsernameNotFoundException("user not found") }
         val newBalance = user.balance + delta
+        logger.info { "balance of ${user.username} changed from ${user.balance} to ${newBalance}" }
         if (newBalance < 0) {
             throw IllegalStateException("balance cant be less than zero")
         }
+        user.balance = newBalance;
         userRepository.save(user)
     }
 }
